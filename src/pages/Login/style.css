@@ -1,0 +1,26 @@
+#backgroundLogin {
+	background-color: #003c8f;
+	color: white;
+}
+
+.Login {
+	background-color: #4c66c0;
+	color: white;
+	width: 20%;
+	padding: 10px;
+	border-radius: 3px;
+
+	margin: auto;
+}
+
+@media only screen and (max-width: 1000px) {
+	.Login {
+		width: 30%;
+	}
+}
+
+@media only screen and (max-width: 900px) {
+	.Login {
+		width: 40%;
+	}
+}
