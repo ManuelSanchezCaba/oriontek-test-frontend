@@ -18,41 +18,57 @@ export default function ListRepresentative() {
 			setRepresentatives(await getAllRepresentativeByIDClient(params.idClient, token));
 			setClient(await getClientByID(params.idClient, token));
 		})();
-	}, []);
+	}, [params.idClient]);
 
-	const header = [
-		'Código',
-		'Nombre',
-		'Teléfono',
-		// 'Teléfono 2',
-		// 'Celular',
-		'Correo',
+	const columns = [
+		{
+			Header: 'Código',
+			accessor: 'id', // accessor is the "key" in the data
+		},
+		{
+			Header: 'Nombre',
+			accessor: 'name',
+		},
+		{
+			Header: 'Teléfono',
+			accessor: 'telephone',
+		},
+		{
+			Header: 'Correo',
+			accessor: 'email',
+		},
+		{
+			Header: 'Acción',
+			accessor: 'action',
+		},
 	];
 
-	const body = representatives.map((representative, index) => (
-		<tr key={index}>
-			<td>{index + 1}</td>
-			<td>{representative.id}</td>
-			<td>{representative.name}</td>
-			<td>{representative.telephone}</td>
-			{/* <td>{representative.telephone2}</td> */}
-			{/* <td>{representative.cellphone}</td> */}
-			<td>{representative.email}</td>
-			<td>
-				<Dropdown drop='end'>
-					<Dropdown.Toggle variant='outline-secondary' size='sm'>
-						Acción
-					</Dropdown.Toggle>
+	const data = representatives
+		.map((representative) => [
+			{
+				id: representative.id,
+				name: representative.name,
+				telephone: representative.telephone,
+				email: representative.email,
+				action: (
+					<Dropdown drop='end'>
+						<Dropdown.Toggle variant='outline-secondary' size='sm'>
+							Acción
+						</Dropdown.Toggle>
 
-					<Dropdown.Menu>
-						<Dropdown.Item as={Link} to={`/representative/${params.idClient}/${representative.id}`}>
-							Actualizar
-						</Dropdown.Item>
-					</Dropdown.Menu>
-				</Dropdown>
-			</td>
-		</tr>
-	));
+						<Dropdown.Menu>
+							<Dropdown.Item
+								as={Link}
+								to={`/representative/${params.idClient}/${representative.id}`}
+							>
+								Actualizar
+							</Dropdown.Item>
+						</Dropdown.Menu>
+					</Dropdown>
+				),
+			},
+		])
+		.flat();
 
 	return (
 		<Container>
@@ -61,17 +77,11 @@ export default function ListRepresentative() {
 					<i>Listado de Representantes: Cliente </i>
 					{client ? <strong> {`${client.longName}(${client.shortName})`}</strong> : <div></div>}
 				</h1>
-				<div>
-					<Button
-						as={Link}
-						to={`/representative/${params.idClient}`}
-						variant='outline-light'
-						style={{ float: 'right', margin: '8px auto' }}
-					>
+				<TableForm columns={columns} data={data} dataEmptyDscr='Ninguna compañía disponible'>
+					<Button as={Link} to={`/representative/${params.idClient}`} variant='outline-light'>
 						Crear Representante
 					</Button>
-				</div>
-				<TableForm header={header} body={body} dataEmptyDscr='Ningún Representante disponible' />
+				</TableForm>
 			</div>
 		</Container>
 	);

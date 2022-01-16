@@ -125,7 +125,7 @@ export default function AddressForm() {
 					</Row>
 					<Row className='mb-3'>
 						<Form.Group as={Col} controlId='formGridStreetNo'>
-							<Form.Label>No. Calle</Form.Label>
+							<Form.Label>No.</Form.Label>
 							<Form.Control
 								type='number'
 								placeholder='No. Calle'

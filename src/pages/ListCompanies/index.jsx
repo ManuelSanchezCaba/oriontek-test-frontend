@@ -10,68 +10,76 @@ export default function ListCompanies() {
 	const [companies, setCompanies] = useState([]);
 	const { token } = useUser();
 
-	const header = [
-		'Código',
-		// 'Alias',
-		'Nombre',
-		'RNC',
-		'Teléfono',
-		// 'Teléfono 2',
-		'Correo',
-		// 'Dirección',
-	];
-
-	const body = companies.map((company, index) => (
-		<tr key={index}>
-			<td>{index + 1}</td>
-			<td>{company.id}</td>
-			{/* <td>{company.shortName}</td> */}
-			<td>{company.longName}</td>
-			<td>{company.rnc}</td>
-			<td>{company.telephone}</td>
-			{/* <td>{company.telephone2}</td> */}
-			<td>{company.email}</td>
-			{/* <td>{company.address}</td> */}
-			<td>
-				<Dropdown drop='end'>
-					<Dropdown.Toggle variant='outline-secondary' size='sm'>
-						Acción
-					</Dropdown.Toggle>
-
-					<Dropdown.Menu>
-						<Dropdown.Item as={Link} to={`/company/${company.id}`}>
-							Actualizar
-						</Dropdown.Item>
-						<Dropdown.Item as={Link} to={`/clients/${company.id}`}>
-							Clientes
-						</Dropdown.Item>
-					</Dropdown.Menu>
-				</Dropdown>
-			</td>
-		</tr>
-	));
-
 	useEffect(() => {
 		(async () => {
 			setCompanies(await getAllCompany(token));
 		})();
 	}, []);
 
+	const columns = [
+		{
+			Header: 'Código',
+			accessor: 'id', // accessor is the "key" in the data
+		},
+		{
+			Header: 'Nombre',
+			accessor: 'longName',
+		},
+		{
+			Header: 'RNC',
+			accessor: 'rnc',
+		},
+		{
+			Header: 'Teléfono',
+			accessor: 'telephone',
+		},
+		{
+			Header: 'Correo',
+			accessor: 'email',
+		},
+		{
+			Header: 'Acción',
+			accessor: 'action',
+		},
+	];
+
+	const data = companies
+		.map((company) => [
+			{
+				id: company.id,
+				longName: company.longName,
+				rnc: company.rnc,
+				telephone: company.telephone,
+				email: company.email,
+				action: (
+					<Dropdown drop='end'>
+						<Dropdown.Toggle variant='outline-secondary' size='sm'>
+							Acción
+						</Dropdown.Toggle>
+
+						<Dropdown.Menu>
+							<Dropdown.Item as={Link} to={`/company/${company.id}`}>
+								Actualizar
+							</Dropdown.Item>
+							<Dropdown.Item as={Link} to={`/clients/${company.id}`}>
+								Clientes
+							</Dropdown.Item>
+						</Dropdown.Menu>
+					</Dropdown>
+				),
+			},
+		])
+		.flat();
+
 	return (
 		<Container>
 			<div className='center'>
 				<h1>Listado de Compañías</h1>
-				<div>
-					<Button
-						as={Link}
-						to={`/company`}
-						variant='outline-light'
-						style={{ float: 'right', margin: '8px auto' }}
-					>
+				<TableForm columns={columns} data={data} dataEmptyDscr='Ninguna compañía disponible'>
+					<Button as={Link} to={`/company`} variant='outline-light'>
 						Crear Compañía
 					</Button>
-				</div>
-				<TableForm header={header} body={body} dataEmptyDscr='Ninguna compañía disponible' />
+				</TableForm>
 			</div>
 		</Container>
 	);
